@@ -1,10 +1,8 @@
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
+import java.util.Objects;
 
 public class CalculatorView extends CalculatorFunctions {
 
@@ -53,6 +51,7 @@ public class CalculatorView extends CalculatorFunctions {
     static final int HEIGHT= 600;
 
     // Arrays
+    JButton[] buttons = new JButton[19];
     String[] themes = {"White", "Black"};
 
     // Array with Y position of the buttons
@@ -78,13 +77,13 @@ public class CalculatorView extends CalculatorFunctions {
         //Header Panel
         headerPanel.setLayout(null);
         headerPanel.setBounds(0, 0, 410, 150);
-        //headerPanel.setBackground(Color.BLUE);
+        headerPanel.setBackground(new Color(213, 213, 213, 255));
         this.add(headerPanel);
 
         //Bottom panel
         bottomPanel.setLayout(null);
         bottomPanel.setBounds(0, 150, 410, 450);
-        //bottomPanel.setBackground(Color.red);
+        bottomPanel.setBackground(new Color(213, 213, 213, 255));
         this.add(bottomPanel);
 
         //textField
@@ -95,6 +94,7 @@ public class CalculatorView extends CalculatorFunctions {
             public void keyTyped(KeyEvent e) {
                 char c = e.getKeyChar();
 
+                // Permite que só números sejam digitados no textField
                 if (!Character.isDigit(c)){
                     e.consume();
                 }
@@ -102,34 +102,43 @@ public class CalculatorView extends CalculatorFunctions {
         });
         headerPanel.add(textField);
 
-        //Combo Box
-        selectTheme.setBounds(210, 20, 100, 25);
-        selectTheme.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                COLOR_RGB = changeTheme(selectTheme.getSelectedItem().toString(), headerPanel, bottomPanel, textField);
-            }
-        });
-        headerPanel.add(selectTheme);
-
+        initThemeSelect();
         initButtons(columns, rows, COLOR_RGB);
 
         this.setVisible(true);
     }
 
+    public void initThemeSelect(){
+        //System.out.println("Theme selector " + COLOR_RGB);
+        selectTheme.setBounds(210, 20, 100, 25);
+        selectTheme.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() != ItemEvent.SELECTED)
+                    return;
+
+                String theme = Objects.requireNonNull(selectTheme.getSelectedItem()).toString();
+                changeTheme(theme, headerPanel, bottomPanel, textField, COLOR_RGB);
+                applyTheme(COLOR_RGB);
+            }
+        });
+        headerPanel.add(selectTheme);
+
+    }
+
     public void initButtons(Integer[] columns, Integer[] rows, int COLOR_RGB){
-        System.out.println(COLOR_RGB);
-        btnC = createButtons("C", columns[0], rows[0], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB);
-        btnC.addActionListener(new ActionListener() {
+        //System.out.println("initButtons " + COLOR_RGB);
+        buttons[0] = createButtons("C", columns[0], rows[0], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[0].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 clear(textField);
             }
         });
-        bottomPanel.add(btnC);
+        bottomPanel.add(buttons[0]);
 
-        btnDelete = createButtons("<-", columns[1], rows[0], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB);
-        btnDelete.addActionListener(new ActionListener() {
+        buttons[1] = createButtons("<-", columns[1], rows[0], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[1].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 StringBuilder sb = new StringBuilder(textField.getText());
@@ -143,10 +152,10 @@ public class CalculatorView extends CalculatorFunctions {
                 }
             }
         });
-        bottomPanel.add(btnDelete);
+        bottomPanel.add(buttons[1]);
 
-        btnPorcentagem = createButtons("%", columns[2], rows[0], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB);
-        btnPorcentagem.addActionListener(new ActionListener() {
+        buttons[2] = createButtons("%", columns[2], rows[0], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[2].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 numPercent = Double.parseDouble(textField.getText()) / 100;
@@ -154,10 +163,10 @@ public class CalculatorView extends CalculatorFunctions {
                 textField.setText(showResult(numPercent));
             }
         });
-        bottomPanel.add(btnPorcentagem);
+        bottomPanel.add(buttons[2]);
 
-        btnDiv = createButtons("/", columns[3], rows[0], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB);
-        btnDiv.addActionListener(new ActionListener() {
+        buttons[3] = createButtons("/", columns[3], rows[0], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[3].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -192,37 +201,37 @@ public class CalculatorView extends CalculatorFunctions {
                 //System.out.println("Num1 = " + num1 + " Num2 = " + num2 + " Operator " + operator + "Result " + result);
             }
         });
-        bottomPanel.add(btnDiv);
+        bottomPanel.add(buttons[3]);
 
-        btn7 = createButtons("7", columns[0], rows[1], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB);
-        btn7.addActionListener(new ActionListener() {
+        buttons[4] = createButtons("7", columns[0], rows[1], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[4].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 textField.setText(textField.getText() + "7");
             }
         });
-        bottomPanel.add(btn7);
+        bottomPanel.add(buttons[4]);
 
-        btn8 = createButtons("8", columns[1], rows[1], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB);
-        btn8.addActionListener(new ActionListener() {
+        buttons[5] = createButtons("8", columns[1], rows[1], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[5].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 textField.setText(textField.getText() + "8");
             }
         });
-        bottomPanel.add(btn8);
+        bottomPanel.add(buttons[5]);
 
-        btn9 = createButtons("9", columns[2], rows[1], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB);
-        btn9.addActionListener(new ActionListener() {
+        buttons[6] = createButtons("9", columns[2], rows[1], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[6].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 textField.setText(textField.getText() + "9");
             }
         });
-        bottomPanel.add(btn9);
+        bottomPanel.add(buttons[6]);
 
-        btnMulti = createButtons("*", columns[3], rows[1], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB);
-        btnMulti.addActionListener(new ActionListener() {
+        buttons[7] = createButtons("*", columns[3], rows[1], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[7].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -257,37 +266,37 @@ public class CalculatorView extends CalculatorFunctions {
                 //System.out.println("Num1 = " + num1 + " Num2 = " + num2 + " Operator " + operator + "Result " + result);
             }
         });
-        bottomPanel.add(btnMulti);
+        bottomPanel.add(buttons[7]);
 
-        btn4 = createButtons("4", columns[0], rows[2], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB);
-        btn4.addActionListener(new ActionListener() {
+        buttons[8] = createButtons("4", columns[0], rows[2], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[8].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 textField.setText(textField.getText() + "4");
             }
         });
-        bottomPanel.add(btn4);
+        bottomPanel.add(buttons[8]);
 
-        btn5 = createButtons("5", columns[1], rows[2], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB);
-        btn5.addActionListener(new ActionListener() {
+        buttons[9] = createButtons("5", columns[1], rows[2], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[9].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 textField.setText(textField.getText() + "5");
             }
         });
-        bottomPanel.add(btn5);
+        bottomPanel.add(buttons[9]);
 
-        btn6 = createButtons("6", columns[2], rows[2], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB);
-        btn6.addActionListener(new ActionListener() {
+        buttons[10] = createButtons("6", columns[2], rows[2], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[10].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 textField.setText(textField.getText() + "6");
             }
         });
-        bottomPanel.add(btn6);
+        bottomPanel.add(buttons[10]);
 
-        btnSub = createButtons("-", columns[3], rows[2], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB);
-        btnSub.addActionListener(new ActionListener() {
+        buttons[11] = createButtons("-", columns[3], rows[2], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[11].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -322,37 +331,37 @@ public class CalculatorView extends CalculatorFunctions {
                 //System.out.println("Num1 = " + num1 + " Num2 = " + num2 + " Operator " + operator);
             }
         });
-        bottomPanel.add(btnSub);
+        bottomPanel.add(buttons[11]);
 
-        btn1 = createButtons("1", columns[0], rows[3], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB);
-        btn1.addActionListener(new ActionListener() {
+        buttons[12] = createButtons("1", columns[0], rows[3], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[12].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 textField.setText(textField.getText() + "1");
             }
         });
-        bottomPanel.add(btn1);
+        bottomPanel.add(buttons[12]);
 
-        btn2 = createButtons("2", columns[1], rows[3], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB);
-        btn2.addActionListener(new ActionListener() {
+        buttons[13] = createButtons("2", columns[1], rows[3], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[13].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 textField.setText(textField.getText() + "2");
             }
         });
-        bottomPanel.add(btn2);
+        bottomPanel.add(buttons[13]);
 
-        btn3 = createButtons("3", columns[2], rows[3], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB);
-        btn3.addActionListener(new ActionListener() {
+        buttons[14] = createButtons("3", columns[2], rows[3], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[14].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 textField.setText(textField.getText() + "3");
             }
         });
-        bottomPanel.add(btn3);
+        bottomPanel.add(buttons[14]);
 
-        btnAdd = createButtons("+", columns[3], rows[3], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB);
-        btnAdd.addActionListener(new ActionListener() {
+        buttons[15] = createButtons("+", columns[3], rows[3], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[15].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -388,28 +397,28 @@ public class CalculatorView extends CalculatorFunctions {
                 //System.out.println("Num1 = " + num1 + " Num2 = " + num2 + " Operator " + operator + "Result " + result);
             }
         });
-        bottomPanel.add(btnAdd);
+        bottomPanel.add(buttons[15]);
 
-        btnPonto = createButtons(".", columns[0], rows[4], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB);
-        btnPonto.addActionListener(new ActionListener() {
+        buttons[16] = createButtons(".", columns[0], rows[4], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[16].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 textField.setText(textField.getText() + ".");
             }
         });
-        bottomPanel.add(btnPonto);
+        bottomPanel.add(buttons[16]);
 
-        btn0 = createButtons("0", columns[1], rows[4], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB);
-        btn0.addActionListener(new ActionListener() {
+        buttons[17] = createButtons("0", columns[1], rows[4], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[17].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 textField.setText(textField.getText() + "0");
             }
         });
-        bottomPanel.add(btn0);
+        bottomPanel.add(buttons[17]);
 
-        btnIgual = createButtons("=", columns[2], rows[4], BUTTON_WIDTH*2 + MARGIN_X - 10, BUTTON_HEIGHT, COLOR_RGB);
-        btnIgual.addActionListener(new ActionListener() {
+        buttons[18] = createButtons("=", columns[2], rows[4], BUTTON_WIDTH*2 + MARGIN_X - 10, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[18].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 num2 = Double.parseDouble(textField.getText());
@@ -432,6 +441,26 @@ public class CalculatorView extends CalculatorFunctions {
                 //System.out.println("Operator: " + operator + " Num1 " + num1 + " Num2 " + num2 + " Result " + result);
             }
         });
-        bottomPanel.add(btnIgual);
+        bottomPanel.add(buttons[18]);
+    }
+
+    public void applyTheme(int COLOR_RGB){
+        //System.out.println(COLOR_RGB);
+
+        for (JButton btn : buttons){
+            String theme = Objects.requireNonNull(selectTheme.getSelectedItem()).toString();
+
+            if (Objects.equals(theme, "Black")){
+                COLOR_RGB = 0;
+            } else {
+                COLOR_RGB = 255;
+            }
+
+            Color color = new Color(COLOR_RGB, COLOR_RGB, COLOR_RGB);
+
+            btn.setBackground(color);
+            btn.setForeground(theme.equals("Black") ? Color.WHITE : Color.BLACK);
+
+        }
     }
 }
