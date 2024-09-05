@@ -2,16 +2,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.Objects;
 
 public class CalculatorFunctions extends JFrame implements ActionListener {
 
     // Create the buttons
-    public JButton createButtons(String text, Integer column, Integer row, int BUTTON_WIDTH, int BUTTON_HEIGHT, int COLOR_RGB, JButton[] buttons){
+    public JButton createButtons(String text, Integer column, Integer row, int BUTTON_WIDTH, int BUTTON_HEIGHT, int COLOR_RGB){
         JButton btn = new JButton(text);
         btn.setBounds(column, row, BUTTON_WIDTH, BUTTON_HEIGHT);
         btn.setFont(new Font("Helvetica", Font.PLAIN, 20));
+            btn.setBackground(new Color(COLOR_RGB, COLOR_RGB, COLOR_RGB));
 
         return btn;
     }
@@ -20,7 +20,6 @@ public class CalculatorFunctions extends JFrame implements ActionListener {
     public void clear(JTextField textField){
         textField.setText("");
     }
-
 
     // Mathematics operations
     public double operation(char operator, double num1, double num2){
@@ -37,20 +36,43 @@ public class CalculatorFunctions extends JFrame implements ActionListener {
         return String.valueOf(num);
     }
 
+
     // Muda o tema da calculadora
-    public void changeTheme(String theme, JPanel headerPanel, JPanel bottomPannel, JTextField textField, int COLOR_RGB){
-        if (Objects.equals(theme, "Black")){
-            COLOR_RGB = 0;
+    public void changeTheme(String theme, JPanel headerPanel, JPanel bottomPannel, JTextField textField, JButton[] buttons){
+        int BACKGROUND_COLOR_RGB;
+        int TF_BG_COLOR;
+        if (Objects.equals(theme, "Dark")){
+            BACKGROUND_COLOR_RGB = 0;
+            TF_BG_COLOR = 42;
         } else {
-            COLOR_RGB = 255;
+            BACKGROUND_COLOR_RGB = 230;
+            TF_BG_COLOR = 255;
         }
 
-        Color color = new Color(COLOR_RGB, COLOR_RGB, COLOR_RGB);
+        Color color = new Color(BACKGROUND_COLOR_RGB, BACKGROUND_COLOR_RGB, BACKGROUND_COLOR_RGB);
 
         headerPanel.setBackground(color);
         bottomPannel.setBackground(color);
-        textField.setBackground(color);
-        textField.setForeground(theme.equals("Black") ? Color.WHITE : Color.BLACK);
+        textField.setBackground(new Color(TF_BG_COLOR, TF_BG_COLOR, TF_BG_COLOR));
+        changeButtonsColor(theme, buttons);
+        textField.setForeground(theme.equals("Dark") ? Color.WHITE : Color.BLACK);
+    }
+
+    public void changeButtonsColor(String theme, JButton[] buttons){
+        for (JButton btn : buttons){
+            int BTN_COLOR_RGB;
+            if (Objects.equals(theme, "Dark")){
+                BTN_COLOR_RGB = 42;
+            } else {
+                BTN_COLOR_RGB = 255;
+            }
+
+            Color color = new Color(BTN_COLOR_RGB, BTN_COLOR_RGB, BTN_COLOR_RGB);
+
+            btn.setBackground(color);
+            btn.setForeground(theme.equals("Dark") ? Color.WHITE : Color.BLACK);
+
+        }
     }
 
     @Override

@@ -14,25 +14,6 @@ public class CalculatorView extends CalculatorFunctions {
     JComboBox selectTheme;
 
     // Button variables
-    JButton btnC;
-    JButton btnDelete;
-    JButton btnPorcentagem;
-    JButton btnDiv;
-    JButton btnMulti;
-    JButton btnSub;
-    JButton btnAdd;
-    JButton btnPonto;
-    JButton btnIgual;
-    JButton btn7;
-    JButton btn8;
-    JButton btn9;
-    JButton btn4;
-    JButton btn5;
-    JButton btn6;
-    JButton btn1;
-    JButton btn2;
-    JButton btn3;
-    JButton btn0;
     Color btnColor;
 
     double num1;
@@ -40,7 +21,8 @@ public class CalculatorView extends CalculatorFunctions {
     double result;
     double numPercent;
     char operator;
-    int COLOR_RGB = 255;
+    int BACKGROUND_COLOR_RGB = 230;
+    int BTN_COLOR_RGB = 255;
 
     // Const variables
     static final int MARGIN_X = 30;
@@ -52,7 +34,7 @@ public class CalculatorView extends CalculatorFunctions {
 
     // Arrays
     JButton[] buttons = new JButton[19];
-    String[] themes = {"White", "Black"};
+    String[] themes = {"White", "Dark"};
 
     // Array with Y position of the buttons
     Integer[] rows = {MARGIN_Y, MARGIN_Y + BUTTON_HEIGHT + 30, MARGIN_Y + BUTTON_HEIGHT * 2 + 30*2, MARGIN_Y + BUTTON_HEIGHT * 3  + 30*3, MARGIN_Y + BUTTON_HEIGHT * 4 + 30*4};
@@ -66,7 +48,7 @@ public class CalculatorView extends CalculatorFunctions {
         bottomPanel = new JPanel();
         textField = new JTextField();
         selectTheme = new JComboBox(themes);
-        btnColor = new Color(COLOR_RGB, COLOR_RGB, COLOR_RGB);
+        btnColor = new Color(BACKGROUND_COLOR_RGB, BACKGROUND_COLOR_RGB, BACKGROUND_COLOR_RGB);
 
         this.setSize(WIDTH,HEIGHT);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -77,13 +59,13 @@ public class CalculatorView extends CalculatorFunctions {
         //Header Panel
         headerPanel.setLayout(null);
         headerPanel.setBounds(0, 0, 410, 150);
-        headerPanel.setBackground(new Color(213, 213, 213, 255));
+        headerPanel.setBackground(new Color(BACKGROUND_COLOR_RGB, BACKGROUND_COLOR_RGB, BACKGROUND_COLOR_RGB, 255));
         this.add(headerPanel);
 
         //Bottom panel
         bottomPanel.setLayout(null);
         bottomPanel.setBounds(0, 150, 410, 450);
-        bottomPanel.setBackground(new Color(213, 213, 213, 255));
+        bottomPanel.setBackground(new Color(BACKGROUND_COLOR_RGB, BACKGROUND_COLOR_RGB, BACKGROUND_COLOR_RGB, 255));
         this.add(bottomPanel);
 
         //textField
@@ -94,8 +76,8 @@ public class CalculatorView extends CalculatorFunctions {
             public void keyTyped(KeyEvent e) {
                 char c = e.getKeyChar();
 
-                // Permite que só números sejam digitados no textField
-                if (!Character.isDigit(c)){
+                // Permite que só números e pontos sejam digitados no textField
+                if (!Character.isDigit(c) && c != '.'){
                     e.consume();
                 }
             }
@@ -103,13 +85,12 @@ public class CalculatorView extends CalculatorFunctions {
         headerPanel.add(textField);
 
         initThemeSelect();
-        initButtons(columns, rows, COLOR_RGB);
+        initButtons(columns, rows, BTN_COLOR_RGB);
 
         this.setVisible(true);
     }
 
     public void initThemeSelect(){
-        //System.out.println("Theme selector " + COLOR_RGB);
         selectTheme.setBounds(210, 20, 100, 25);
         selectTheme.addItemListener(new ItemListener() {
             @Override
@@ -118,17 +99,15 @@ public class CalculatorView extends CalculatorFunctions {
                     return;
 
                 String theme = Objects.requireNonNull(selectTheme.getSelectedItem()).toString();
-                changeTheme(theme, headerPanel, bottomPanel, textField, COLOR_RGB);
-                applyTheme(COLOR_RGB);
+                changeTheme(theme, headerPanel, bottomPanel, textField, buttons);
             }
         });
         headerPanel.add(selectTheme);
 
     }
 
-    public void initButtons(Integer[] columns, Integer[] rows, int COLOR_RGB){
-        //System.out.println("initButtons " + COLOR_RGB);
-        buttons[0] = createButtons("C", columns[0], rows[0], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+    public void initButtons(Integer[] columns, Integer[] rows, int BTN_COLOR_RGB){
+        buttons[0] = createButtons("C", columns[0], rows[0], BUTTON_WIDTH, BUTTON_HEIGHT, BTN_COLOR_RGB);
         buttons[0].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -137,7 +116,7 @@ public class CalculatorView extends CalculatorFunctions {
         });
         bottomPanel.add(buttons[0]);
 
-        buttons[1] = createButtons("<-", columns[1], rows[0], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[1] = createButtons("<-", columns[1], rows[0], BUTTON_WIDTH, BUTTON_HEIGHT, BTN_COLOR_RGB);
         buttons[1].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -154,7 +133,7 @@ public class CalculatorView extends CalculatorFunctions {
         });
         bottomPanel.add(buttons[1]);
 
-        buttons[2] = createButtons("%", columns[2], rows[0], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[2] = createButtons("%", columns[2], rows[0], BUTTON_WIDTH, BUTTON_HEIGHT, BTN_COLOR_RGB);
         buttons[2].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -165,12 +144,12 @@ public class CalculatorView extends CalculatorFunctions {
         });
         bottomPanel.add(buttons[2]);
 
-        buttons[3] = createButtons("/", columns[3], rows[0], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[3] = createButtons("/", columns[3], rows[0], BUTTON_WIDTH, BUTTON_HEIGHT, BTN_COLOR_RGB);
         buttons[3].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                // Verifica se já existe um número atribuido na variavel num1. Se existir, é porque existe outra operação a ser feita primeiro
+                // Verifica se existe outra operação a ser feita primeira.
                 if (num1 != 0.0){
                     num2 = Double.parseDouble(textField.getText());
                     result = operation(operator, num1, num2);
@@ -178,11 +157,9 @@ public class CalculatorView extends CalculatorFunctions {
                     operator = '/';
                     textField.setText("");
 
-                    //System.out.println("Num1 = " + num1 + " Num2 = " + num2 + " Operator " + operator + "Result " + result);
                     return;
                 }
 
-                // Verifica se já existe um número atribuido na variavel result. Se existir, é porque existe outra operação a ser feita primeiro
                 if (result != 0.0){
                     num2 = Double.parseDouble(textField.getText());
                     result = operation(operator, result, num2);
@@ -190,20 +167,19 @@ public class CalculatorView extends CalculatorFunctions {
                     operator = '/';
                     textField.setText("");
 
-                    //System.out.println("Caiu no if result");
                     return;
                 }
 
+                // Se não, está é a primeira operação
                 num1 = Double.parseDouble(textField.getText());
                 operator = '/';
                 textField.setText("");
 
-                //System.out.println("Num1 = " + num1 + " Num2 = " + num2 + " Operator " + operator + "Result " + result);
             }
         });
         bottomPanel.add(buttons[3]);
 
-        buttons[4] = createButtons("7", columns[0], rows[1], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[4] = createButtons("7", columns[0], rows[1], BUTTON_WIDTH, BUTTON_HEIGHT, BTN_COLOR_RGB);
         buttons[4].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -212,7 +188,7 @@ public class CalculatorView extends CalculatorFunctions {
         });
         bottomPanel.add(buttons[4]);
 
-        buttons[5] = createButtons("8", columns[1], rows[1], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[5] = createButtons("8", columns[1], rows[1], BUTTON_WIDTH, BUTTON_HEIGHT, BTN_COLOR_RGB);
         buttons[5].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -221,7 +197,7 @@ public class CalculatorView extends CalculatorFunctions {
         });
         bottomPanel.add(buttons[5]);
 
-        buttons[6] = createButtons("9", columns[2], rows[1], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[6] = createButtons("9", columns[2], rows[1], BUTTON_WIDTH, BUTTON_HEIGHT, BTN_COLOR_RGB);
         buttons[6].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -230,12 +206,12 @@ public class CalculatorView extends CalculatorFunctions {
         });
         bottomPanel.add(buttons[6]);
 
-        buttons[7] = createButtons("*", columns[3], rows[1], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[7] = createButtons("*", columns[3], rows[1], BUTTON_WIDTH, BUTTON_HEIGHT, BTN_COLOR_RGB);
         buttons[7].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                // Verifica se já existe um número atribuido na VARIAVEL NUM1. Se existir, é porque existe outra operação a ser feita primeiro
+                // Verifica se existe outra operação a ser feita primeira.
                 if (num1 != 0.0){
                     num2 = Double.parseDouble(textField.getText());
                     result = operation(operator, num1, num2);
@@ -243,11 +219,9 @@ public class CalculatorView extends CalculatorFunctions {
                     operator = '*';
                     textField.setText("");
 
-                    //System.out.println("Num1 = " + num1 + " Num2 = " + num2 + " Operator " + operator + "Result " + result);
                     return;
                 }
 
-                // Verifica se já existe um número atribuido na VARIAVEL RESULT. Se existir, é porque existe outra operação a ser feita primeiro
                 if (result != 0.0){
                     num2 = Double.parseDouble(textField.getText());
                     result = operation(operator, result, num2);
@@ -255,20 +229,19 @@ public class CalculatorView extends CalculatorFunctions {
                     operator = '*';
                     textField.setText("");
 
-                    //System.out.println("Caiu no if result " + result);
                     return;
                 }
 
+                // Se não, está é a primeira operação
                 num1 = Double.parseDouble(textField.getText());
                 operator = '*';
                 textField.setText("");
 
-                //System.out.println("Num1 = " + num1 + " Num2 = " + num2 + " Operator " + operator + "Result " + result);
             }
         });
         bottomPanel.add(buttons[7]);
 
-        buttons[8] = createButtons("4", columns[0], rows[2], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[8] = createButtons("4", columns[0], rows[2], BUTTON_WIDTH, BUTTON_HEIGHT, BTN_COLOR_RGB);
         buttons[8].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -277,7 +250,7 @@ public class CalculatorView extends CalculatorFunctions {
         });
         bottomPanel.add(buttons[8]);
 
-        buttons[9] = createButtons("5", columns[1], rows[2], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[9] = createButtons("5", columns[1], rows[2], BUTTON_WIDTH, BUTTON_HEIGHT, BTN_COLOR_RGB);
         buttons[9].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -286,7 +259,7 @@ public class CalculatorView extends CalculatorFunctions {
         });
         bottomPanel.add(buttons[9]);
 
-        buttons[10] = createButtons("6", columns[2], rows[2], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[10] = createButtons("6", columns[2], rows[2], BUTTON_WIDTH, BUTTON_HEIGHT, BTN_COLOR_RGB);
         buttons[10].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -295,12 +268,12 @@ public class CalculatorView extends CalculatorFunctions {
         });
         bottomPanel.add(buttons[10]);
 
-        buttons[11] = createButtons("-", columns[3], rows[2], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[11] = createButtons("-", columns[3], rows[2], BUTTON_WIDTH, BUTTON_HEIGHT, BTN_COLOR_RGB);
         buttons[11].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                // Verifica se já existe um número atribuido na variavel num1. Se existir, é porque existe outra operação a ser feita primeiro
+                // Verifica se existe outra operação a ser feita primeira.
                 if (num1 != 0.0){
                     num2 = Double.parseDouble(textField.getText());
                     result = operation(operator, num1, num2);
@@ -308,11 +281,9 @@ public class CalculatorView extends CalculatorFunctions {
                     operator = '-';
                     textField.setText("");
 
-                    //System.out.println("Num1 = " + num1 + " Num2 = " + num2 + " Operator " + operator + "Result " + result);
                     return;
                 }
 
-                // Verifica se já existe um número atribuido na variavel result. Se existir, é porque existe outra operação a ser feita primeiro
                 if (result != 0.0){
                     num2 = Double.parseDouble(textField.getText());
                     result = operation(operator, result, num2);
@@ -320,20 +291,19 @@ public class CalculatorView extends CalculatorFunctions {
                     num1 = 0.0;
                     textField.setText("");
 
-                    //System.out.println("Caiu no if result");
                     return;
                 }
 
+                // Se não, está é a primeira operação
                 num1 = Double.parseDouble(textField.getText());
                 operator = '-';
                 textField.setText("");
 
-                //System.out.println("Num1 = " + num1 + " Num2 = " + num2 + " Operator " + operator);
             }
         });
         bottomPanel.add(buttons[11]);
 
-        buttons[12] = createButtons("1", columns[0], rows[3], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[12] = createButtons("1", columns[0], rows[3], BUTTON_WIDTH, BUTTON_HEIGHT, BTN_COLOR_RGB);
         buttons[12].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -342,7 +312,7 @@ public class CalculatorView extends CalculatorFunctions {
         });
         bottomPanel.add(buttons[12]);
 
-        buttons[13] = createButtons("2", columns[1], rows[3], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[13] = createButtons("2", columns[1], rows[3], BUTTON_WIDTH, BUTTON_HEIGHT, BTN_COLOR_RGB);
         buttons[13].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -351,7 +321,7 @@ public class CalculatorView extends CalculatorFunctions {
         });
         bottomPanel.add(buttons[13]);
 
-        buttons[14] = createButtons("3", columns[2], rows[3], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[14] = createButtons("3", columns[2], rows[3], BUTTON_WIDTH, BUTTON_HEIGHT, BTN_COLOR_RGB);
         buttons[14].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -360,12 +330,12 @@ public class CalculatorView extends CalculatorFunctions {
         });
         bottomPanel.add(buttons[14]);
 
-        buttons[15] = createButtons("+", columns[3], rows[3], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[15] = createButtons("+", columns[3], rows[3], BUTTON_WIDTH, BUTTON_HEIGHT, BTN_COLOR_RGB);
         buttons[15].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                // Verifica se já existe um número atribuido na variavel num1. Se existir, é porque existe outra operação a ser feita primeiro
+                // Verifica se existe outra operação a ser feita primeira.
                 if (num1 != 0.0){
                     num2 = Double.parseDouble(textField.getText());
                     result = operation(operator, num1, num2);
@@ -373,11 +343,9 @@ public class CalculatorView extends CalculatorFunctions {
                     operator = '+';
                     textField.setText("");
 
-                    //System.out.println("Caiu no if num1 " + "Num1 = " + num1 + " Num2 = " + num2 + " Operator " + operator + "Result " + result);
                     return;
                 }
 
-                // Verifica se já existe um número atribuido na variavel result. Se existir, é porque existe outra operação a ser feita primeiro
                 if (result != 0.0){
                     num2 = Double.parseDouble(textField.getText());
                     result = operation(operator, result, num2);
@@ -385,7 +353,6 @@ public class CalculatorView extends CalculatorFunctions {
                     textField.setText("");
                     num1 = 0.0;
 
-                    //System.out.println("Caiu no if result " + result);
                     return;
                 }
 
@@ -394,12 +361,11 @@ public class CalculatorView extends CalculatorFunctions {
                 operator = '+';
                 textField.setText("");
 
-                //System.out.println("Num1 = " + num1 + " Num2 = " + num2 + " Operator " + operator + "Result " + result);
             }
         });
         bottomPanel.add(buttons[15]);
 
-        buttons[16] = createButtons(".", columns[0], rows[4], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[16] = createButtons(".", columns[0], rows[4], BUTTON_WIDTH, BUTTON_HEIGHT, BTN_COLOR_RGB);
         buttons[16].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -408,7 +374,7 @@ public class CalculatorView extends CalculatorFunctions {
         });
         bottomPanel.add(buttons[16]);
 
-        buttons[17] = createButtons("0", columns[1], rows[4], BUTTON_WIDTH, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[17] = createButtons("0", columns[1], rows[4], BUTTON_WIDTH, BUTTON_HEIGHT, BTN_COLOR_RGB);
         buttons[17].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -417,13 +383,13 @@ public class CalculatorView extends CalculatorFunctions {
         });
         bottomPanel.add(buttons[17]);
 
-        buttons[18] = createButtons("=", columns[2], rows[4], BUTTON_WIDTH*2 + MARGIN_X - 10, BUTTON_HEIGHT, COLOR_RGB, buttons);
+        buttons[18] = createButtons("=", columns[2], rows[4], BUTTON_WIDTH*2 + MARGIN_X - 10, BUTTON_HEIGHT, BTN_COLOR_RGB);
         buttons[18].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 num2 = Double.parseDouble(textField.getText());
 
-                // Se o resultado for == 0, quer dizer que só tem uma operação a ser feita.
+                // Se result for == 0, quer dizer que só tem uma operação a ser feita.
                 if (result == 0.0){
                     textField.setText(showResult(operation(operator, num1, num2)));
                     num1 = 0;
@@ -432,35 +398,14 @@ public class CalculatorView extends CalculatorFunctions {
                     return;
                 }
 
-                //Se não é == 0, é porque o usuário fez mais de uma operação em sequência
+                //Se não, é porque o usuário fez mais de uma operação em sequência
                 textField.setText(showResult(operation(operator, result, num2)));
                 num1 = 0;
                 num2 =0;
                 result = 0;
 
-                //System.out.println("Operator: " + operator + " Num1 " + num1 + " Num2 " + num2 + " Result " + result);
             }
         });
         bottomPanel.add(buttons[18]);
-    }
-
-    public void applyTheme(int COLOR_RGB){
-        //System.out.println(COLOR_RGB);
-
-        for (JButton btn : buttons){
-            String theme = Objects.requireNonNull(selectTheme.getSelectedItem()).toString();
-
-            if (Objects.equals(theme, "Black")){
-                COLOR_RGB = 0;
-            } else {
-                COLOR_RGB = 255;
-            }
-
-            Color color = new Color(COLOR_RGB, COLOR_RGB, COLOR_RGB);
-
-            btn.setBackground(color);
-            btn.setForeground(theme.equals("Black") ? Color.WHITE : Color.BLACK);
-
-        }
     }
 }
