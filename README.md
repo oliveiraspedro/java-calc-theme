@@ -13,9 +13,9 @@ Um app simples de calculadora feita em java e Java Swing. Este projeto realiza o
 - 🔄 Função de limpar e resetar
 
 ## 📷 Screenshots
-![WhiteTheme](https://github.com/user-attachments/assets/df72688f-bf44-4be3-921a-9f225913ddfb)
+![WhiteTheme](https://github.com/user-attachments/assets/9bca8eb1-baf3-4f3f-923e-711869aad963)
 
-![DarkTheme](https://github.com/user-attachments/assets/5a51cc71-a80d-40c0-ac9d-a2d4052d1ef9)
+![DarkTheme](https://github.com/user-attachments/assets/72f84ca9-65a2-434f-a0c7-da52f58d136b)
 
 ## 🧰 Tecnologias
 - ☕ Java 11+
