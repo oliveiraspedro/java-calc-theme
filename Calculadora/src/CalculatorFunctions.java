@@ -73,6 +73,8 @@ public class CalculatorFunctions extends JFrame implements ActionListener {
             btn.setForeground(theme.equals("Dark") ? Color.WHITE : Color.BLACK);
 
         }
+
+        buttons[18].setBackground(new Color(66, 143, 192));
     }
 
     @Override

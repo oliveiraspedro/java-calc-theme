@@ -406,6 +406,7 @@ public class CalculatorView extends CalculatorFunctions {
 
             }
         });
+        buttons[18].setBackground(new Color(66, 143, 192));
         bottomPanel.add(buttons[18]);
     }
 }
