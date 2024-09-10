@@ -74,7 +74,7 @@ public class CalculatorFunctions extends JFrame implements ActionListener {
 
         }
 
-        buttons[18].setBackground(new Color(66, 143, 192));
+//        buttons[18].setBackground(new Color(66, 143, 192));
     }
 
     @Override

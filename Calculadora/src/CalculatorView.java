@@ -1,5 +1,7 @@
 
 import javax.swing.*;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Objects;
@@ -71,19 +73,11 @@ public class CalculatorView extends CalculatorFunctions {
         //textField
         textField.setBounds(10, 60, 300, 60);
         textField.setFont(new Font("Helvetica", Font.BOLD, 35));
-        textField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                char c = e.getKeyChar();
-
-                // Permite que só números e pontos sejam digitados no textField
-                if (!Character.isDigit(c) && c != '.'){
-                    e.consume();
-                }
-            }
-        });
+        PlainDocument document = (PlainDocument) textField.getDocument();
+        document.setDocumentFilter(new FilterTextField());
         headerPanel.add(textField);
 
+        // Inicialização
         initThemeSelect();
         initButtons(columns, rows, BTN_COLOR_RGB);
 
