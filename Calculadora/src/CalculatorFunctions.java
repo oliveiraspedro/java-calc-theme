@@ -11,7 +11,7 @@ public class CalculatorFunctions extends JFrame implements ActionListener {
         JButton btn = new JButton(text);
         btn.setBounds(column, row, BUTTON_WIDTH, BUTTON_HEIGHT);
         btn.setFont(new Font("Helvetica", Font.PLAIN, 20));
-            btn.setBackground(new Color(COLOR_RGB, COLOR_RGB, COLOR_RGB));
+        btn.setBackground(new Color(COLOR_RGB, COLOR_RGB, COLOR_RGB));
 
         return btn;
     }
@@ -59,7 +59,7 @@ public class CalculatorFunctions extends JFrame implements ActionListener {
     }
 
     public void changeButtonsColor(String theme, JButton[] buttons){
-        for (JButton btn : buttons){
+        for (int i=0; i < buttons.length - 1; i++){
             int BTN_COLOR_RGB;
             if (Objects.equals(theme, "Dark")){
                 BTN_COLOR_RGB = 42;
@@ -69,12 +69,11 @@ public class CalculatorFunctions extends JFrame implements ActionListener {
 
             Color color = new Color(BTN_COLOR_RGB, BTN_COLOR_RGB, BTN_COLOR_RGB);
 
-            btn.setBackground(color);
-            btn.setForeground(theme.equals("Dark") ? Color.WHITE : Color.BLACK);
+            buttons[i].setBackground(color);
+            buttons[i].setForeground(theme.equals("Dark") ? Color.WHITE : Color.BLACK);
+            buttons[buttons.length - 1].setForeground(theme.equals("Dark") ? Color.WHITE : Color.BLACK);
 
         }
-
-//        buttons[18].setBackground(new Color(66, 143, 192));
     }
 
     @Override
