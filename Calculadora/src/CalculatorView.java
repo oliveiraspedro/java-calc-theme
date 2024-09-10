@@ -1,5 +1,7 @@
 
 import javax.swing.*;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Objects;
@@ -15,6 +17,7 @@ public class CalculatorView extends CalculatorFunctions {
 
     // Button variables
     Color btnColor;
+    JButton equalsBtn;
 
     double num1;
     double num2;
@@ -71,19 +74,11 @@ public class CalculatorView extends CalculatorFunctions {
         //textField
         textField.setBounds(10, 60, 300, 60);
         textField.setFont(new Font("Helvetica", Font.BOLD, 35));
-        textField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                char c = e.getKeyChar();
-
-                // Permite que só números e pontos sejam digitados no textField
-                if (!Character.isDigit(c) && c != '.'){
-                    e.consume();
-                }
-            }
-        });
+        PlainDocument document = (PlainDocument) textField.getDocument();
+        document.setDocumentFilter(new FilterTextField());
         headerPanel.add(textField);
 
+        // Inicialização
         initThemeSelect();
         initButtons(columns, rows, BTN_COLOR_RGB);
 
@@ -369,7 +364,9 @@ public class CalculatorView extends CalculatorFunctions {
         buttons[16].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                textField.setText(textField.getText() + ".");
+                String currentText = textField.getText();
+                String revisedtext = new FilterTextField().revise(currentText + ".");
+                textField.setText(revisedtext);
             }
         });
         bottomPanel.add(buttons[16]);
@@ -383,8 +380,9 @@ public class CalculatorView extends CalculatorFunctions {
         });
         bottomPanel.add(buttons[17]);
 
-        buttons[18] = createButtons("=", columns[2], rows[4], BUTTON_WIDTH*2 + MARGIN_X - 10, BUTTON_HEIGHT, BTN_COLOR_RGB);
-        buttons[18].addActionListener(new ActionListener() {
+        equalsBtn = createButtons("=", columns[2], rows[4], BUTTON_WIDTH*2 + MARGIN_X - 10, BUTTON_HEIGHT, BTN_COLOR_RGB);
+        buttons[18] = equalsBtn;
+        equalsBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 num2 = Double.parseDouble(textField.getText());
@@ -406,7 +404,7 @@ public class CalculatorView extends CalculatorFunctions {
 
             }
         });
-        buttons[18].setBackground(new Color(66, 143, 192));
-        bottomPanel.add(buttons[18]);
+        equalsBtn.setBackground(new Color(66, 143, 192));
+        bottomPanel.add(equalsBtn);
     }
 }
